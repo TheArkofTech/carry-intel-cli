@@ -1,0 +1,20 @@
+{
+  "name": "carry-intel",
+  "version": "1.0.0",
+  "description": "Hyperliquid funding-carry intelligence — buy per call via x402 (USDC on Solana). Verdicts, full-universe hedgeable carry scan, daily settled-prints digest, and a free sample.",
+  "type": "module",
+  "bin": { "carry-intel": "bin/carry-intel.mjs" },
+  "main": "index.mjs",
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "@x402/core": "^2.28.0",
+    "@x402/svm": "^2.28.0",
+    "@solana/kit": "^5.5.1"
+  },
+  "repository": { "type": "git", "url": "git+https://github.com/TheArkofTech/carry-intel-cli.git" },
+  "keywords": ["hyperliquid", "carry", "funding", "x402", "trading", "perp", "defi", "mcp", "agentic-commerce"],
+  "license": "SEE LICENSE IN LICENSE.md",
+  "scripts": {
+    "start": "node bin/carry-intel.mjs"
+  }
+}
