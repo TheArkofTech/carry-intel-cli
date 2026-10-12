@@ -2,9 +2,9 @@
 /**
  * carry-intel CLI — buy Hyperliquid funding-carry intelligence per call via x402.
  *
- *   carry-intel verdicts       $0.05 — live EDGE/BASELINE/NEG verdicts + position tracking
- *   carry-intel opportunities  $0.25 — full-universe hedgeable carry scan
- *   carry-intel digest         $0.01 — latest daily settled-prints digest
+ *   carry-intel verdicts       $0.10 — live EDGE/BASELINE/NEG verdicts + position tracking
+ *   carry-intel opportunities  $0.50 — full-universe hedgeable carry scan
+ *   carry-intel digest         $0.02 — latest daily settled-prints digest
  *   carry-intel free           FREE  — yesterday's digest (quality check, no payment)
  *   carry-intel balance               — buyer float + treasury revenue
  *   carry-intel mcp-config            — print MCP client config for this server
@@ -23,9 +23,9 @@ import { createKeyPairSignerFromPrivateKeyBytes } from '@solana/kit';
 
 const BASE = process.env.CARRY_BASE || 'https://devbox.tail873466.ts.net:10000';
 const ROUTES = {
-  verdicts: { path: '/carry/verdicts', price: 0.05 },
-  opportunities: { path: '/carry/opportunities', price: 0.25 },
-  digest: { path: '/carry/digest/latest', price: 0.01 },
+  verdicts: { path: '/carry/verdicts', price: 0.10 },
+  opportunities: { path: '/carry/opportunities', price: 0.50 },
+  digest: { path: '/carry/digest/latest', price: 0.02 },
 };
 
 function walletPath(args) {
@@ -72,9 +72,9 @@ async function main() {
   if (!cmd || cmd === 'help') {
     console.log(`carry-intel — Hyperliquid funding-carry intelligence, per call via x402
 
-  verdicts       $0.05  live EDGE/BASELINE/NEG verdicts per tracked leg + position tracking
-  opportunities  $0.25  full-universe scan: every positive-funding perp ranked by hedgeability
-  digest         $0.01  latest daily settled-prints digest (markdown)
+  verdicts       $0.10  live EDGE/BASELINE/NEG verdicts per tracked leg + position tracking
+  opportunities  $0.50  full-universe scan: every positive-funding perp ranked by hedgeability
+  digest         $0.02  latest daily settled-prints digest (markdown)
   free           $0.00  yesterday's digest — verify quality before paying
   balance               buyer float (USDC) via public RPC
   mcp-config            JSON config to add this server to any MCP client

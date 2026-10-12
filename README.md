@@ -12,9 +12,9 @@ npx github:TheArkofTech/carry-intel-cli <command>
 | Command | Price | What you get |
 |---|---|---|
 | `free` | **$0.00** | Yesterday's full funding digest — verify quality before paying |
-| `digest` | $0.01 | Latest daily settled-prints funding digest (markdown) |
-| `verdicts` | $0.05 | Live EDGE/BASELINE/NEG verdicts per tracked leg + basis gates + position tracking |
-| `opportunities` | $0.25 | Full-universe scan: every positive-funding perp ranked by spot-hedgeability |
+| `digest` | $0.02 | Latest daily settled-prints funding digest (markdown) |
+| `verdicts` | $0.10 | Live EDGE/BASELINE/NEG verdicts per tracked leg + basis gates + position tracking |
+| `opportunities` | $0.50 | Full-universe scan: every positive-funding perp ranked by spot-hedgeability |
 | `balance` | free | Your buyer wallet's USDC balance |
 | `mcp-config` | free | JSON config to add this server to any MCP client |
 | `license` | free | Proprietary Data License (no-resale, cryptographic provenance) |
@@ -26,7 +26,7 @@ mkdir -p ~/.carry-intel
 # write a JSON array of 32 or 64 bytes (your Solana keypair) to:
 #   ~/.carry-intel/wallet.json        (Linux/macOS)
 #   %USERPROFILE%\.carry-intel\wallet.json   (Windows)
-# fund it with USDC (Solana) — $0.05 covers the cheapest 5 paid calls
+# fund it with USDC (Solana) — $0.02 covers the cheapest 5 paid calls
 ```
 
 Or point elsewhere: `CARRY_WALLET=/path/to/wallet.json`.
