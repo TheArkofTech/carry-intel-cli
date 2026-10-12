@@ -1,7 +1,7 @@
 {
   "name": "carry-intel",
   "version": "1.0.0",
-  "description": "Hyperliquid funding-carry intelligence — buy per call via x402 (USDC on Solana). Verdicts, full-universe hedgeable carry scan, daily settled-prints digest, and a free sample.",
+  "description": "Hyperliquid funding-carry intelligence — buy per call via x402 (USDC on Solana). Verdicts, gross-rate annualization, spot-liquidity-screened scan (depth/fees/execution not checked), daily settled-prints digest, and a dated free sample.",
   "type": "module",
   "bin": { "carry-intel": "bin/carry-intel.mjs" },
   "main": "index.mjs",
@@ -15,6 +15,7 @@
   "keywords": ["hyperliquid", "carry", "funding", "x402", "trading", "perp", "defi", "mcp", "agentic-commerce"],
   "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
-    "start": "node bin/carry-intel.mjs"
+    "start": "node bin/carry-intel.mjs",
+    "test": "node --test"
   }
 }

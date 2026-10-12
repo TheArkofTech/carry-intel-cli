@@ -2,10 +2,10 @@
 /**
  * carry-intel CLI — buy Hyperliquid funding-carry intelligence per call via x402.
  *
- *   carry-intel verdicts       $0.10 — live EDGE/BASELINE/NEG verdicts + position tracking
- *   carry-intel opportunities  $0.50 — full-universe hedgeable carry scan
+ *   carry-intel verdicts       $0.10 — live verdicts + tracked status (sizes redacted by default)
+ *   carry-intel opportunities  $0.50 — full-universe spot-liquidity-screened scan
  *   carry-intel digest         $0.02 — latest daily settled-prints digest
- *   carry-intel free           FREE  — yesterday's digest (quality check, no payment)
+ *   carry-intel free           FREE  — previous published digest (sample/latest dates included)
  *   carry-intel balance               — buyer float + treasury revenue
  *   carry-intel mcp-config            — print MCP client config for this server
  *
@@ -20,13 +20,7 @@ import { x402Client, x402HTTPClient } from '@x402/core/client';
 import { registerExactSvmScheme } from '@x402/svm/exact/client';
 import { toClientSvmSigner } from '@x402/svm';
 import { createKeyPairSignerFromPrivateKeyBytes } from '@solana/kit';
-
-const BASE = process.env.CARRY_BASE || 'https://devbox.tail873466.ts.net:10000';
-const ROUTES = {
-  verdicts: { path: '/carry/verdicts', price: 0.10 },
-  opportunities: { path: '/carry/opportunities', price: 0.50 },
-  digest: { path: '/carry/digest/latest', price: 0.02 },
-};
+import { BASE, ROUTES, validatePaymentChallenge } from '../lib/payment-policy.mjs';
 
 function walletPath(args) {
   const i = args.indexOf('--wallet');
@@ -50,16 +44,18 @@ async function paidFetch(route, wp) {
   const core = x402Client.fromConfig({ schemes: [] });
   registerExactSvmScheme(core, { signer });
   const http = new x402HTTPClient(core);
-  let r = await fetch(BASE + route);
+  const url = BASE + route;
+  let r = await fetch(url, { redirect: 'error' });
   if (r.status === 402) {
     const pr = http.getPaymentRequiredResponse((n) => r.headers.get(n));
+    validatePaymentChallenge(pr, url);
     const payload = await http.createPaymentPayload(pr);
-    r = await fetch(BASE + route, { headers: http.encodePaymentSignatureHeader(payload) });
+    r = await fetch(url, { headers: http.encodePaymentSignatureHeader(payload), redirect: 'error' });
   }
   if (r.status === 402) throw new Error('payment rejected — check wallet USDC balance (Solana)');
   if (!r.ok) throw new Error(`HTTP ${r.status}`);
   const res = await http.processResponse(r);
-  if (res.paymentStatus === 'settle_failed') throw new Error('settlement failed');
+  if (res.paymentStatus !== 'settled') throw new Error(`unexpected payment status: ${res.paymentStatus ?? 'missing'}`);
   const prov = r.headers.get('x-carry-provenance');
   return { body: res.body, provenance: prov };
 }
@@ -72,15 +68,15 @@ async function main() {
   if (!cmd || cmd === 'help') {
     console.log(`carry-intel — Hyperliquid funding-carry intelligence, per call via x402
 
-  verdicts       $0.10  live EDGE/BASELINE/NEG verdicts per tracked leg + position tracking
-  opportunities  $0.50  full-universe scan: every positive-funding perp ranked by hedgeability
+  verdicts       $0.10  live verdicts + tracked status; exact position sizes redacted by default
+  opportunities  $0.50  positive-funding candidates screened by USDC spot pair and 24h volume ≥ $10k
   digest         $0.02  latest daily settled-prints digest (markdown)
-  free           $0.00  yesterday's digest — verify quality before paying
+  free           $0.00  previous published digest — sample and latest dates included
   balance               buyer float (USDC) via public RPC
   mcp-config            JSON config to add this server to any MCP client
-  license               data license terms (no-resale, provenance receipt)
+  license               data license terms (no-resale, operator-side HMAC watermark)
 
-Env: CARRY_WALLET (keypair JSON path, default ~/.carry-intel/wallet.json), CARRY_BASE (server)
+Env: CARRY_WALLET (keypair JSON path, default ~/.carry-intel/wallet.json)
 Free sample: ${BASE}/carry/digest/free — no payment needed.`);
     return;
   }
@@ -122,7 +118,7 @@ Free sample: ${BASE}/carry/digest/free — no payment needed.`);
   const { body, provenance } = await paidFetch(route.path, wp);
   const text = typeof body === 'string' ? body : JSON.stringify(body, null, 2);
   console.log(text);
-  if (provenance) console.error(`\n[provenance receipt: ${provenance}]`);
+  if (provenance) console.error(`\n[operator-side HMAC watermark; not independently buyer-verifiable: ${provenance}]`);
 }
 
 main().catch((e) => { console.error('ERROR:', e.message); process.exit(1); });

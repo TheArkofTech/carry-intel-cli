@@ -16,10 +16,10 @@ Each settled x402 payment grants the buyer a **non-exclusive, non-transferable, 
 - Systematic scraping of free routes (`/carry/digest/free`, `/llms.txt`, `/mcp` tools/list, `/carry/digest/latest` via any settlement) to reconstruct a competing product.
 
 ## 4. Provenance & enforcement
-Every paid response carries an HMAC receipt (`x-carry-provenance` header / `_x402_provenance` field) bound to the on-chain settlement transaction hash. Redistributed output retains this watermark: any competing product built on purchased data is **attributable and provable from its own output**. Settlements are public on Solana mainnet to `22PpHwVGiikZMJKPLjMmbaUhfkoLG6J28NjJurbsM2g1`.
+Every paid response may carry a server-generated HMAC receipt (`x-carry-provenance` header / `_x402_provenance` field) linked to the settlement. The verification secret is not public: buyers cannot independently validate the receipt, and it is not standalone proof of redistribution. The operator can use it for internal attribution. Settlements are public on Solana mainnet to `22PpHwVGiikZMJKPLjMmbaUhfkoLG6J28NjJurbsM2g1`.
 
 ## 5. Facts are not licensable
-Raw funding rates, prices, and exchange-sourced facts originate from Hyperliquid's public API and remain freely re-derivable by anyone. What this license protects is the **compiled work**: verdict taxonomy, hedgeability classification, digests, and the track record as organized expression. Nothing here restricts independent derivation from the primary source.
+Raw funding rates, prices, and exchange-sourced facts originate from Hyperliquid's public API and remain freely re-derivable by anyone. What this license protects is the **compiled work**: verdict taxonomy, spot-liquidity-screen labels, digests, and the track record as organized expression. The screen does not establish execution depth or a hedge guarantee. Nothing here restricts independent derivation from the primary source.
 
 ## 6. No warranty
 Data is provided as-is. Funding rates change hourly; verdicts are point-in-time. No financial advice. To the maximum extent permitted by law, licensor is not liable for trading losses.
