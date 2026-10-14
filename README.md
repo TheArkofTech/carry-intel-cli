@@ -1,7 +1,7 @@
 # carry-intel CLI — Hyperliquid funding-carry intelligence, per call via x402
 
-Buy live carry intelligence with on-chain micropayments. No API key. No account. No signup.
-Every call settles USDC on Solana mainnet through the x402 facilitator.
+Retrieve read-only Hyperliquid funding-screen data and settle paid routes with on-chain micropayments. No API key. No account. No signup.
+Paid calls settle USDC on Solana mainnet through the x402 facilitator; the free digest and wallet-balance commands do not charge.
 
 ```
 npx github:TheArkofTech/carry-intel-cli <command>
@@ -13,8 +13,8 @@ npx github:TheArkofTech/carry-intel-cli <command>
 |---|---|---|
 | `free` | **$0.00** | Previous published digest; response names the sample and latest-report dates |
 | `digest` | $0.02 | Latest daily settled-prints funding digest (markdown) |
-| `verdicts` | $0.10 | Live EDGE/BASELINE/NEG verdicts per tracked leg + basis gates; exact sizes redacted by default |
-| `opportunities` | $0.50 | Positive-funding perps ranked by spot-liquidity screen; depth/fees/slippage/basis/execution unchecked |
+| `verdicts` | $0.10 | Current EDGE/BASELINE/NEG funding classifications per tracked leg + basis gates; not proof of a position |
+| `opportunities` | $0.50 | Funding candidates ranked by spot-liquidity screen; depth/fees/slippage/basis/execution unchecked |
 | `balance` | free | Your buyer wallet's USDC balance |
 | `mcp-config` | free | JSON config to add this server to any MCP client |
 | `license` | free | Proprietary Data License (no-resale; operator-verifiable HMAC watermark) |
@@ -36,12 +36,17 @@ Or set a different local wallet file: `CARRY_WALLET=/path/to/wallet.json`.
 ## Same product, other surfaces
 
 - **Remote MCP:** `{"mcpServers":{"carry-intel":{"url":"https://devbox.tail873466.ts.net:10000/mcp"}}}` — listed in the official MCP registry as `io.github.TheArkofTech/carry-intel`
+- **Read-only MCP Console App:** optional UI endpoint at `https://devbox.tail873466.ts.net:10000/mcp/carry-console`, separate from the standard server and not included in `mcp-config`. Configure MCP Apps-capable clients:
+  ```json
+  {"mcpServers":{"carry-console":{"url":"https://devbox.tail873466.ts.net:10000/mcp/carry-console"}}}
+  ```
+  `carry_opportunities_ui` renders the same $0.50 scan. The current tool schema accepts only `ui_refresh`; payment authorization uses the HTTP `PAYMENT-SIGNATURE` header, never tool arguments. The app does not sign payments or execute trades.
 - **Raw HTTP/x402:** `https://devbox.tail873466.ts.net:10000` (see `/llms.txt`)
-- **Track record:** https://github.com/TheArkOfTech/hl-carry-public — daily digests and settled prints. Exact current position sizes and balances are redacted by default.
+- **Track record:** https://github.com/TheArkofTech/hl-carry-public — daily settled prints and evidence boundaries. The latest [`/verify`](https://devbox.tail873466.ts.net:10000/verify) observation at `2026-10-14T02:53:24.440Z` asserted a live position while returning an empty `perp_positions` list; do not infer open positions or strategy returns from this CLI.
 
 ## Why pay for data that comes from a public API?
 
-Annualization uses the current hourly funding rate × 24 × 365 and is gross, not realized or forecast. The scan requires a USDC spot pair and at least $10,000 in 24-hour pair volume. This is only a spot-liquidity screen: order-book depth, fees, slippage, basis, and execution are not checked. The legacy `hedgeable` field and `UNHEDGEABLE` label indicate only whether that screen passed; they do not guarantee or rule out executable hedges. Exact position sizes and balances are redacted by default.
+Annualization uses the current hourly funding rate × 24 × 365 and is gross, not realized or forecast. The scan requires a USDC spot pair and at least $10,000 in 24-hour pair volume. This is only a spot-liquidity screen: order-book depth, fees, slippage, basis, and execution are not checked. The legacy `hedgeable` field and `UNHEDGEABLE` label indicate only whether that screen passed; they do not guarantee or rule out executable hedges. The CLI returns market-data screens, not a portfolio statement or evidence of open positions.
 
 ## License
 
